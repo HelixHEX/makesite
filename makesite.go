@@ -28,20 +28,13 @@ func main() {
 
 	t := template.Must(template.ParseFiles("template.tmpl"))
 
-	newFile, err := os.Create("new.html")
+	name := string(*filePath)[:len(string(*filePath))-4]
+	newFile, err := os.Create(name + ".html")
 
 	if err != nil {
 		panic(err)
 	}
 
 	t.Execute(newFile, page)
-	// t := template.Must(template.New("template.tmpl").ParseFiles("template.tmpl"))
 
-	// newFile, err := os.Create("new.html")
-
-	// if err != nil {
-	// 	panic(err)
-	// }
-
-	// t.Execute(newFile, page)
 }
