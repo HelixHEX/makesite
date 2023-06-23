@@ -5,6 +5,8 @@ import (
 	"html/template"
 	"io/ioutil"
 	"os"
+
+	"github.com/tevino/log"
 )
 
 type Page struct {
@@ -12,6 +14,8 @@ type Page struct {
 }
 
 func generatePage(dir string, filePath string) {
+	log.SetOutputLevel(log.INFO)
+
 	lastDirChar := dir[len(dir)-1:]
 
 	if lastDirChar != "/" {
@@ -21,7 +25,7 @@ func generatePage(dir string, filePath string) {
 	fileContents, fileContentsErr := ioutil.ReadFile(dir + filePath)
 
 	if fileContentsErr != nil {
-		panic(fileContentsErr)
+		log.Info("Error reading file: ", fileContentsErr)
 	}
 
 	page := Page{
@@ -34,13 +38,14 @@ func generatePage(dir string, filePath string) {
 	newFile, err := os.Create(dir + name + ".html")
 
 	if err != nil {
-		panic(err)
+		log.Info("Error creating file: ", err)
 	}
 
 	t.Execute(newFile, page)
 }
 
 func main() {
+
 	filePath := flag.String("file", "", "Get file from command-line input")
 	dir := flag.String("dir", "", "Find all .txt files and generate separate HTML files for each")
 	flag.Parse()
@@ -51,7 +56,7 @@ func main() {
 		files, filesErr := ioutil.ReadDir(*dir)
 
 		if filesErr != nil {
-			panic(filesErr)
+			log.Info("Error reading directory: ", filesErr)
 		}
 
 		for _, file := range files {
